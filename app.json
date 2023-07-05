@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "beat_scroll",
-    "slug": "beat_scroll",
+    "name": "beat_scroll_v2",
+    "slug": "beat_scroll_v2",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -11,9 +11,6 @@
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
       "**/*"
@@ -28,6 +25,7 @@
       }
     },
     "web": {
+      "bundler": "metro",
       "favicon": "./assets/images/favicon.png"
     }
   }
