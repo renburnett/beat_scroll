@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "beat_scroll_v2",
-    "slug": "beat_scroll_v2",
+    "name": "beat_scroll",
+    "slug": "beat_scroll",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
