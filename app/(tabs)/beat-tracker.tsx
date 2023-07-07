@@ -1,10 +1,11 @@
-import { Button, Snackbar, Text, MD2Colors } from "react-native-paper";
+import { useState } from "react";
+import { StyleSheet, Text } from "react-native";
+import { View } from '../../components/Themed';
 import Icon from "react-native-paper/src/components/Icon";
-import { CountdownTimeInSeconds } from "../../constants/Timer";
-import { StyleSheet, View } from "react-native";
-import { useEffect, useState } from "react";
+import { CountdownTimeInSeconds } from "../../constants/Timing";
+import { Button, Snackbar, MD2Colors } from "react-native-paper";
 
-export default function TabTwoScreen() {
+export default function BeatTracker() {
   const [bpm, setBpm] = useState<number>(60);
   const [intervals, setIntervals] = useState<number[]>([]);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -65,8 +66,8 @@ export default function TabTwoScreen() {
 
   return (
     <View style={styles.container}>
-      <Text variant="headlineLarge"> Track Your Beat</Text>
-      <Text variant="titleMedium">
+      <Text style={{fontSize: 20}}> Track Your Beat</Text>
+      <Text style={{fontSize: 13}}>
         {isTrackingBeat
           ? timeLeftInSeconds
           : "Press Start to Calculate Your BPM"}
@@ -92,7 +93,7 @@ export default function TabTwoScreen() {
         Track
       </Button>
       <View style={styles.separator} />
-      <Text variant="headlineSmall">Current Bpm Interval: {bpm}</Text>
+      <Text style={{fontSize: 13}}>Current Bpm Interval: {bpm}</Text>
       <Snackbar
         visible={snackbarVisible}
         action={{

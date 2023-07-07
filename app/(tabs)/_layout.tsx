@@ -1,19 +1,11 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import Icon from "react-native-paper/src/components/Icon";
 import { Link, Tabs } from 'expo-router';
 import { Pressable, useColorScheme } from 'react-native';
 
 import Colors from '../../constants/Colors';
 
-/**
- * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
- */
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
-
+// TODO: use paper bottom nav
+// https://callstack.github.io/react-native-paper/docs/components/BottomNavigation/
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
@@ -25,17 +17,16 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: 'Beats',
+          tabBarIcon: ({ color }) => <Icon color={color} size={25} source="playlist-music" />,
           headerRight: () => (
             <Link href="/modal" asChild>
               <Pressable>
                 {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
+                  <Icon
+                    source="information-outline"
                     size={25}
                     color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                   />
                 )}
               </Pressable>
@@ -44,17 +35,17 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="beat-tracker"
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: 'Beat Tracker',
+          tabBarIcon: ({ color }) => <Icon color={color} size={25} source="music-box" />,
         }}
       />
         <Tabs.Screen
-          name="three"
+          name="auto-scroller"
           options={{
-            title: 'Tab Three',
-            tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+            title: 'Auto Scroller',
+            tabBarIcon: ({ color }) => <Icon color={color} size={25} source="bullhorn-outline" />,
           }}
         />
     </Tabs>
