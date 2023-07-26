@@ -6,8 +6,6 @@ import { Text, View } from '../../components/Themed';
 export default function TabOneScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>List of Previously Saved Beats</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <BeatIndex path="app/(tabs)/index.tsx" />
     </View>
   );
@@ -22,9 +20,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+    marginTop: 30,
   },
   separator: {
-    marginVertical: 30,
+    marginVertical: 20,
     height: 1,
     width: '80%',
   },
