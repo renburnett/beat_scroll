@@ -1,18 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, Text, MD2Colors } from 'react-native-paper';
-import { StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import { ScrollSpeed } from '../../constants/Timing';
 import { View } from '../../components/Themed';
+import { DND_LOREM } from '../../constants/DummyText';
 
 const AutoScroller = () => {
   const scrollViewRef = useRef<ScrollView>(null);
   const scrollJumpLengthRef = useRef<number>(1);
+
   const [isScrolling, setIsScrolling] = useState<boolean>(false);
   const [isScrollComplete, setIsScrollComplete] = useState<boolean>(false);
+  const [hasManuallyScrolled, setHasManuallyScrolled] = useState<boolean>(false);
   const [autoScrollInterval, setAutoScrollInterval] = useState<NodeJS.Timer | null>(null);
 
   useEffect(() => {
-    /* when scrolling is finished, clear interval and update `isScrolling` */
     if (isScrollComplete) {
       if (autoScrollInterval && scrollViewRef.current) {
         clearInterval(autoScrollInterval);
@@ -56,71 +58,63 @@ const AutoScroller = () => {
     }
 
     setIsScrollComplete(false);
+    setHasManuallyScrolled(false);
   }
 
-  const handleScroll = (event: any) => {
-    console.log(event)
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const contentHeight = event.nativeEvent.contentSize.height;
     const scrollViewHeight = event.nativeEvent.layoutMeasurement.height;
     const scrollPosition = event.nativeEvent.contentOffset.y;
 
+    /*
+      if the window is not auto-scrolling and the user is scrolling manually,
+      set this flag to indicate that the user has manually scrolled
+    */
+    if (!isScrolling && scrollPosition > 0) {
+      setHasManuallyScrolled(true);
+    }
     setIsScrollComplete(scrollPosition >= (contentHeight - scrollViewHeight));
   }
 
   return (
     <View style={styles.container}>
-      {!isScrollComplete ? (
-        <View style={{marginTop: 20}}>
-          <Button
-            disabled={isScrolling}
-            buttonColor={MD2Colors.tealA700}
-            icon="script-text-play-outline"
-            mode="contained"
-            onPress={startAutoScroll}
-          >
-            Start
-          </Button>
-        </View>
-      ) : (
-        <View style={{marginTop: 20}}>
-          <Button
-            disabled={isScrolling}
-            buttonColor={MD2Colors.redA700}
-            icon="refresh"
-            mode="contained"
-            onPress={resetAutoScroll}
-          >
-            Reset
-          </Button>
-        </View>
-      )}
+    {hasManuallyScrolled ? (
+      // Show the Reset button if the user has manually scrolled
+      <View style={{ marginTop: 20 }}>
+        <Button
+          disabled={isScrolling}
+          buttonColor={MD2Colors.redA700}
+          icon="refresh"
+          mode="contained"
+          onPress={resetAutoScroll}
+        >
+          Reset
+        </Button>
+      </View>
+    ) : (
+      <View style={{ marginTop: 20 }}>
+        <Button
+          disabled={isScrolling}
+          buttonColor={MD2Colors.tealA700}
+          icon="script-text-play-outline"
+          mode="contained"
+          onPress={startAutoScroll}
+        >
+          Start
+        </Button>
+      </View>
+    )}
 
       <ScrollView
         ref={scrollViewRef}
         onScroll={handleScroll}
         scrollEventThrottle={16}
+        scrollEnabled={!isScrolling}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.contentContainer}
       >
         <Text style={styles.text}>
-          {/* TODO: Add dynamic text */}
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur volutpat felis vitae
-          Nullam nec eros condimentum, lacinia mauris non, tincidunt arcu.
-          Vivamus id ex a eros iaculis aliquet in at elit. Fusce dapibus risus vel turpis finibus,
-          eget venenatis dui hendrerit. Sed eu ante enim. Mauris ullamcorper, orci sed dictum
-          efficitur, dolor nunc placerat risus, non volutpat velit urna ac libero
-          eget venenatis dui hendrerit. Sed eu ante enim. Mauris ullamcorper, orci sed dictum
-          mauris iaculis congue. Nullam nec eros condimentum, lacinia mauris non, tincidunt arcu.
-          Vivamus id ex a eros iaculis aliquet in at elit. Fusce dapibus risus vel turpis finibus,
-          mauris iaculis congue. Nullam nec eros condimentum, lacinia mauris non, tincidunt arcu.
-          eget venenatis dui hendrerit. Sed eu ante enim. Mauris ullamcorper, orci sed dictum
-          efficitur, dolor nunc placerat risus, non volutpat velit urna ac libero
-          Vivamus id ex a eros iaculis aliquet in at elit. Fusce dapibus risus vel turpis finibus,
-          eget venenatis dui hendrerit. Sed eu ante enim. Nullam nec eros condimentum, lacinia mauris non,
-          dolor nunc placerat risus, non volutpat velit urna ac liberotincidunt arcu.
-          Vivamus id ex a eros iaculis aliquet in at elit. Fusce dapibus risus vel turpis finibus,
-          eget venenatis dui hendrerit. Sed eu ante enim. Mauris ullamcorper, orci sed dictum
-          efficitur, dolor nunc placerat risus, non volutpat velit urna ac libero.
+          {DND_LOREM}
         </Text>
       </ScrollView>
     </View>
@@ -139,7 +133,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     lineHeight: 24,
-    textAlign: 'center',
+    textAlign: 'left',
     paddingHorizontal: 16,
   },
 });

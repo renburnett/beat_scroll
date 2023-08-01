@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { List } from 'react-native-paper';
 
@@ -8,7 +8,7 @@ export default function BeatIndex({ path }: { path: string }) {
   const handlePress = () => setExpanded(!expanded);
 
   return (
-    <List.Section>
+    <List.Section style={styles.container}>
       <List.Accordion
         title="Previous Beats"
         left={props => <List.Icon {...props} icon="folder" />}
@@ -23,5 +23,7 @@ export default function BeatIndex({ path }: { path: string }) {
 };
 
 const styles = StyleSheet.create({
-
+  container: {
+    marginTop: 20,
+  }
 });

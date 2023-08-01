@@ -30,6 +30,7 @@ export default function RootLayout() {
   return (
     <PaperProvider>
       {/* Keep the splash screen open until the assets have loaded. In the future, we should just support async font loading with a native version of font-display. */}
+      {/* TODO: update the syntax for splash screens in expo 49 */}
       {!loaded && <SplashScreen />}
       {loaded && <RootLayoutNav />}
     </PaperProvider>
