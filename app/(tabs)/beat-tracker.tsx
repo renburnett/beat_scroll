@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, View as NonThemedView } from "react-native";
 import { View } from '../../components/Themed';
 import Icon from "react-native-paper/src/components/Icon";
 import { CountdownTimeInSeconds } from "../../constants/Timing";
 import { Button, Snackbar, MD2Colors } from "react-native-paper";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function BeatTracker() {
-  const [bpm, setBpm] = useState<number>(60);
+  const [bpm, setBpm] = useState<number>(120);
   const [intervals, setIntervals] = useState<number[]>([]);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [isTrackingBeat, setIsTrackingBeat] = useState<boolean>(false);
@@ -64,6 +65,20 @@ export default function BeatTracker() {
     }
   };
 
+  const handleSaveBpm = () => {
+    setTimeout(async () =>  {
+      setSnackbarVisible(false);
+
+      try {
+        await AsyncStorage.setItem('@bpm', JSON.stringify(bpm));
+        setBpm(bpm);
+      } catch (e) {
+        /* TODO: throw error */
+        console.error(e);
+      }
+    }, 1000);
+  }
+
   return (
     <View style={styles.container}>
       <Text style={{fontSize: 20}}> Track Your Beat</Text>
@@ -93,25 +108,25 @@ export default function BeatTracker() {
         Track
       </Button>
       <View style={styles.separator} />
-      <Text style={{fontSize: 13}}>Current Bpm Interval: {bpm}</Text>
+      <Text style={{fontSize: 13}}>Saved Bpm: {bpm}</Text>
       <Snackbar
         visible={snackbarVisible}
         action={{
-          label: "Clear",
+          label: "Cancel",
           onPress: () => setSnackbarVisible(false),
         }}
-        onDismiss={() => setSnackbarVisible(false)}
+        onDismiss={handleSaveBpm}
       >
-        <View style={{ flexDirection: "row", justifyContent: "flex-start" }}>
-          <Icon color="white" size={25} source="content-save-check" />
-          <Text
-            style={{ color: "white", alignItems: "center", display: "flex" }}
-          >
-            {"Bpm Saved!"}
-          </Text>
+          <NonThemedView style={{ flexDirection: "row", justifyContent: "flex-start" }}>
+            <Icon color={MD2Colors.purple200} size={25} source="content-save-check" />
+            <Text
+              style={{ color: "white", alignItems: "center", display: "flex" }}
+            >
+              {"Saving..."}
+            </Text>
+          </NonThemedView>
           {/* TODO: add error logic? */}
           {/* <Text style={{ color: "white", alignItems: "center", display: "flex" }}>{(intervals.length > 1) ? 'Bpm Saved!' : 'Please Try Again.'}</Text> */}
-        </View>
       </Snackbar>
     </View>
   );

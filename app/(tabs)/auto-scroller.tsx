@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, Text, MD2Colors } from 'react-native-paper';
+import { Button, Text, Caption, MD2Colors } from 'react-native-paper';
 import { StyleSheet, ScrollView, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
+import Slider from '@react-native-community/slider';
 import { ScrollSpeed } from '../../constants/Timing';
 import { View } from '../../components/Themed';
 import { DND_LOREM } from '../../constants/DummyText';
@@ -13,6 +14,14 @@ const AutoScroller = () => {
   const [isScrollComplete, setIsScrollComplete] = useState<boolean>(false);
   const [hasManuallyScrolled, setHasManuallyScrolled] = useState<boolean>(false);
   const [autoScrollInterval, setAutoScrollInterval] = useState<NodeJS.Timer | null>(null);
+  const [bpm, setBpm] = useState<number>(120);
+  const [scrollSpeed, setScrollSpeed] = useState<number>(60000 / bpm);
+
+  useEffect(() => {
+    const newScrollSpeed = 60000 / bpm;
+    setScrollSpeed(newScrollSpeed);
+    console.log(bpm);
+  }, [bpm]);
 
   useEffect(() => {
     if (isScrollComplete) {
@@ -21,7 +30,7 @@ const AutoScroller = () => {
         setIsScrolling(false);
       }
     }
-  }, [scrollJumpLengthRef.current, isScrollComplete, autoScrollInterval]);
+  }, [scrollJumpLengthRef.current, isScrollComplete, autoScrollInterval, bpm]);
 
   const startAutoScroll = () => {
     if (scrollViewRef.current) {
@@ -37,7 +46,7 @@ const AutoScroller = () => {
     const interval = setInterval(() => {
       if (scrollViewRef.current && scrollJumpLengthRef.current) {
         scrollViewRef.current.scrollTo({ y: scrollJumpLengthRef.current, animated: false });
-        scrollJumpLengthRef.current += 0.5;
+        scrollJumpLengthRef.current += 0.5; /* pixel distance */
       }
     }, ScrollSpeed);
 
@@ -78,33 +87,6 @@ const AutoScroller = () => {
 
   return (
     <View style={styles.container}>
-    {hasManuallyScrolled ? (
-      // Show the Reset button if the user has manually scrolled
-      <View style={{ marginTop: 20 }}>
-        <Button
-          disabled={isScrolling}
-          buttonColor={MD2Colors.redA700}
-          icon="refresh"
-          mode="contained"
-          onPress={resetAutoScroll}
-        >
-          Reset
-        </Button>
-      </View>
-    ) : (
-      <View style={{ marginTop: 20 }}>
-        <Button
-          disabled={isScrolling}
-          buttonColor={MD2Colors.tealA700}
-          icon="script-text-play-outline"
-          mode="contained"
-          onPress={startAutoScroll}
-        >
-          Start
-        </Button>
-      </View>
-    )}
-
       <ScrollView
         ref={scrollViewRef}
         onScroll={handleScroll}
@@ -117,24 +99,78 @@ const AutoScroller = () => {
           {DND_LOREM}
         </Text>
       </ScrollView>
+
+      <Slider
+        style={styles.slider}
+        minimumValue={40}
+        maximumValue={220}
+        step={1}
+        value={bpm}
+        onValueChange={setBpm}
+        minimumTrackTintColor={MD2Colors.blue500}
+        maximumTrackTintColor={MD2Colors.blue300}
+        thumbTintColor={MD2Colors.blue500}
+      />
+      <Caption style={styles.caption}>BPM: {bpm}</Caption>
+      {hasManuallyScrolled ? (
+        <Button
+          style={styles.button}
+          disabled={isScrolling}
+          buttonColor={MD2Colors.redA700}
+          icon="refresh"
+          mode="contained"
+          onPress={resetAutoScroll}
+        >
+          Reset
+        </Button>
+      ) : (
+        <Button
+          style={styles.button}
+          disabled={isScrolling}
+          buttonColor={MD2Colors.tealA700}
+          icon="script-text-play-outline"
+          mode="contained"
+          onPress={startAutoScroll}
+        >
+          Start
+        </Button>
+      )}
     </View>
   );
+
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    flexDirection: 'column',
+    alignItems: 'stretch',
     justifyContent: 'center',
   },
   contentContainer: {
-    paddingVertical: 16,
+    marginVertical: 8,
+    width: '100%',
+    justifyContent: 'center',
   },
   text: {
     fontSize: 16,
     lineHeight: 24,
     textAlign: 'left',
     paddingHorizontal: 16,
+  },
+  caption: {
+    textAlign: 'center',
+    color: MD2Colors.black,
+  },
+  button: {
+    alignSelf: 'center',
+    marginTop: 12,
+    marginBottom: 10,
+  },
+  slider: {
+    width: '80%',
+    marginVertical: 10,
+    alignSelf: 'center',
   },
 });
 
