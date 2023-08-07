@@ -1,27 +1,34 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Button, Text, Caption, MD2Colors } from 'react-native-paper';
-import { StyleSheet, ScrollView, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
-import Slider from '@react-native-community/slider';
-import { ScrollSpeed } from '../../constants/Timing';
-import { View } from '../../components/Themed';
-import { DND_LOREM } from '../../constants/DummyText';
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Text, Caption, MD2Colors } from "react-native-paper";
+import {
+  StyleSheet,
+  ScrollView,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+} from "react-native";
+import Slider from "@react-native-community/slider";
+import {
+  FONT_SIZE,
+  SCROLL_SPEED,
+  SCROLL_DISTANCE,
+  DEFAULT_BPM,
+  MIN_BPM,
+  MAX_BPM,
+} from "../../constants/Timing";
+import { View } from "../../components/Themed";
+import { DND_LOREM } from "../../constants/DummyText";
 
 const AutoScroller = () => {
   const scrollViewRef = useRef<ScrollView>(null);
-  const scrollJumpLengthRef = useRef<number>(1);
+  const scrollJumpLengthRef = useRef<number>(SCROLL_DISTANCE.Medium);
 
   const [isScrolling, setIsScrolling] = useState<boolean>(false);
   const [isScrollComplete, setIsScrollComplete] = useState<boolean>(false);
-  const [hasManuallyScrolled, setHasManuallyScrolled] = useState<boolean>(false);
-  const [autoScrollInterval, setAutoScrollInterval] = useState<NodeJS.Timer | null>(null);
-  const [bpm, setBpm] = useState<number>(120);
-  const [scrollSpeed, setScrollSpeed] = useState<number>(60000 / bpm);
-
-  useEffect(() => {
-    const newScrollSpeed = 60000 / bpm;
-    setScrollSpeed(newScrollSpeed);
-    console.log(bpm);
-  }, [bpm]);
+  const [hasManuallyScrolled, setHasManuallyScrolled] =
+    useState<boolean>(false);
+  const [autoScrollInterval, setAutoScrollInterval] =
+    useState<NodeJS.Timer | null>(null);
+  const [bpm, setBpm] = useState<number>(DEFAULT_BPM);
 
   useEffect(() => {
     if (isScrollComplete) {
@@ -45,13 +52,19 @@ const AutoScroller = () => {
 
     const interval = setInterval(() => {
       if (scrollViewRef.current && scrollJumpLengthRef.current) {
-        scrollViewRef.current.scrollTo({ y: scrollJumpLengthRef.current, animated: false });
-        scrollJumpLengthRef.current += 0.5; /* pixel distance */
+        scrollViewRef.current.scrollTo({
+          y: scrollJumpLengthRef.current,
+          animated: false,
+        });
+        /* REN TODO: hook up bpm to this function  */
+        // scrollJumpLengthRef.current += GetScrollDistanceForBPM(bpm)
+
+        scrollJumpLengthRef.current += SCROLL_DISTANCE.Fastest; /* pixel distance */
       }
-    }, ScrollSpeed);
+    }, SCROLL_SPEED);
 
     setAutoScrollInterval(interval);
-  }
+  };
 
   const resetAutoScroll = () => {
     if (scrollViewRef.current) {
@@ -68,7 +81,7 @@ const AutoScroller = () => {
 
     setIsScrollComplete(false);
     setHasManuallyScrolled(false);
-  }
+  };
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const contentHeight = event.nativeEvent.contentSize.height;
@@ -82,30 +95,35 @@ const AutoScroller = () => {
     if (!isScrolling && scrollPosition > 0) {
       setHasManuallyScrolled(true);
     }
-    setIsScrollComplete(scrollPosition >= (contentHeight - scrollViewHeight));
-  }
+
+    /* account for any unintended offset due to 0.5 pixel scroll speed */
+    const roundingBuffer = 2;
+
+    setIsScrollComplete(
+      scrollPosition >= contentHeight - scrollViewHeight - roundingBuffer
+    );
+  };
 
   return (
     <View style={styles.container}>
       <ScrollView
         ref={scrollViewRef}
         onScroll={handleScroll}
-        scrollEventThrottle={16}
+        scrollEventThrottle={SCROLL_SPEED}
         scrollEnabled={!isScrolling}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.contentContainer}
       >
-        <Text style={styles.text}>
-          {DND_LOREM}
-        </Text>
+        <Text style={styles.scrollText}>{DND_LOREM}</Text>
       </ScrollView>
 
       <Slider
         style={styles.slider}
-        minimumValue={40}
-        maximumValue={220}
+        minimumValue={MIN_BPM}
+        maximumValue={MAX_BPM}
         step={1}
         value={bpm}
+        disabled={isScrolling}
         onValueChange={setBpm}
         minimumTrackTintColor={MD2Colors.blue500}
         maximumTrackTintColor={MD2Colors.blue300}
@@ -137,40 +155,40 @@ const AutoScroller = () => {
       )}
     </View>
   );
-
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
-    alignItems: 'stretch',
-    justifyContent: 'center',
+    flexDirection: "column",
+    alignItems: "stretch",
+    justifyContent: "center",
   },
   contentContainer: {
     marginVertical: 8,
-    width: '100%',
-    justifyContent: 'center',
+    width: "100%",
+    justifyContent: "center",
   },
-  text: {
-    fontSize: 16,
+  scrollText: {
+    fontSize: FONT_SIZE,
     lineHeight: 24,
-    textAlign: 'left',
+    textAlign: "left",
     paddingHorizontal: 16,
   },
   caption: {
-    textAlign: 'center',
+    textAlign: "center",
     color: MD2Colors.black,
   },
   button: {
-    alignSelf: 'center',
+    alignSelf: "center",
     marginTop: 12,
     marginBottom: 10,
   },
   slider: {
-    width: '80%',
-    marginVertical: 10,
-    alignSelf: 'center',
+    width: "80%",
+    marginTop: 20,
+    marginBottom: 10,
+    alignSelf: "center",
   },
 });
 

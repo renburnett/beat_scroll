@@ -2,20 +2,21 @@ import { useState } from "react";
 import { StyleSheet, Text, View as NonThemedView } from "react-native";
 import { View } from '../../components/Themed';
 import Icon from "react-native-paper/src/components/Icon";
-import { CountdownTimeInSeconds } from "../../constants/Timing";
+import { DEFAULT_BPM } from "../../constants/Timing";
 import { Button, Snackbar, MD2Colors } from "react-native-paper";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function BeatTracker() {
-  const [bpm, setBpm] = useState<number>(120);
+  const [bpm, setBpm] = useState<number>(DEFAULT_BPM);
   const [intervals, setIntervals] = useState<number[]>([]);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [isTrackingBeat, setIsTrackingBeat] = useState<boolean>(false);
   const [trackingButtonIcon, setTrackingButtonIcon] = useState<boolean>(false);
   const [previousInterval, setPreviousInterval] = useState<number>(Date.now());
-  const [timeLeftInSeconds, setTimeLeftInSeconds] = useState<number>(
-    CountdownTimeInSeconds
-  );
+  const [timeLeftInSeconds, setTimeLeftInSeconds] = useState<number>(5);
+
+  /* TODO: make this based on user input */
+  const initialCoundownTimeLeftInSeconds = 5;
 
   const addBeatInterval = () => {
     if (isTrackingBeat) {
@@ -54,14 +55,14 @@ export default function BeatTracker() {
       }, 1000);
 
       setTimeout(() => {
-        console.log(`${CountdownTimeInSeconds} has passed`);
+        console.log(`${initialCoundownTimeLeftInSeconds} has passed`);
         setSnackbarVisible(true);
         setIsTrackingBeat(false);
         setIntervals([]);
         calculateBeatInterval();
         clearInterval(timer);
-        setTimeLeftInSeconds(CountdownTimeInSeconds);
-      }, 1000 * CountdownTimeInSeconds);
+        setTimeLeftInSeconds(initialCoundownTimeLeftInSeconds);
+      }, 1000 * initialCoundownTimeLeftInSeconds);
     }
   };
 
