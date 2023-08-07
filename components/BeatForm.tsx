@@ -1,4 +1,4 @@
-// BeatForm.tsx
+// TODO: make this into a standalone page
 import React, { useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { Button, MD2Colors } from 'react-native-paper';
