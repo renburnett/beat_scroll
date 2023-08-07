@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { Button, MD2Colors } from 'react-native-paper';
 import { Beat } from '../constants/Types';
-import { DEFAULT_BPM } from '../constants/Timing';
+import { DEFAULT_BPM, MIN_BPM, MAX_BPM } from '../constants/Timing';
 
 interface BeatFormProps {
   onFormSubmit: (beat: Beat) => void;
@@ -26,7 +26,7 @@ export default function BeatForm({ onFormSubmit }: BeatFormProps) {
         value={bpm}
         onChangeText={setBpm}
         style={styles.input}
-        placeholder="Enter BPM between ${MIN_BPM} and ${MAX_BPM}"
+        placeholder={`Enter BPM between ${MIN_BPM} and ${MAX_BPM}`}
         keyboardType="numeric"
       />
       <TextInput
