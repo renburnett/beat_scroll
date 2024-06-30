@@ -22,6 +22,18 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
 
+  // Prevent the splash screen from auto-hiding
+  useEffect(() => {
+    SplashScreen.preventAutoHideAsync();
+  }, []);
+
+  // Hide the splash screen once fonts are loaded
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
+
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
@@ -29,9 +41,6 @@ export default function RootLayout() {
 
   return (
     <PaperProvider>
-      {/* Keep the splash screen open until the assets have loaded. In the future, we should just support async font loading with a native version of font-display. */}
-      {/* TODO: update the syntax for splash screens in expo 49 */}
-      {!loaded && <SplashScreen />}
       {loaded && <RootLayoutNav />}
     </PaperProvider>
   );
