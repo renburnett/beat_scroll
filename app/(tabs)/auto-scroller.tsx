@@ -21,34 +21,31 @@ import { DND_LOREM } from "../../constants/DummyText";
 const AutoScroller = () => {
   const scrollViewRef = useRef<ScrollView>(null);
   const scrollJumpLengthRef = useRef<number>(SCROLL_DISTANCE.Medium);
+  const [autoScrollInterval, setAutoScrollInterval] = useState<NodeJS.Timer | null>(null);
+  const [bpm, setBpm] = useState<number>(DEFAULT_BPM);
 
   const [isScrolling, setIsScrolling] = useState<boolean>(false);
   const [isScrollComplete, setIsScrollComplete] = useState<boolean>(false);
-  const [hasManuallyScrolled, setHasManuallyScrolled] =
-    useState<boolean>(false);
-  const [autoScrollInterval, setAutoScrollInterval] =
-    useState<NodeJS.Timer | null>(null);
-  const [bpm, setBpm] = useState<number>(DEFAULT_BPM);
+  const [hasManuallyScrolled, setHasManuallyScrolled] = useState<boolean>(false);
 
   useEffect(() => {
     if (isScrollComplete) {
-      if (autoScrollInterval && scrollViewRef.current) {
+      if (autoScrollInterval) {
         clearInterval(autoScrollInterval);
         setIsScrolling(false);
+        scrollJumpLengthRef.current = SCROLL_DISTANCE.Medium;
+
+        setIsScrollComplete(false);
       }
     }
   }, [scrollJumpLengthRef.current, isScrollComplete, autoScrollInterval, bpm]);
 
   const startAutoScroll = () => {
+    //TODO: add 3, 2, 1 countdown to let singer prepare
+
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollTo({ y: 0, animated: false });
     }
-
-    if (autoScrollInterval) {
-      clearInterval(autoScrollInterval);
-    }
-
-    setIsScrolling(true);
 
     const interval = setInterval(() => {
       if (scrollViewRef.current && scrollJumpLengthRef.current) {
@@ -56,14 +53,15 @@ const AutoScroller = () => {
           y: scrollJumpLengthRef.current,
           animated: false,
         });
+
         /* REN TODO: hook up bpm to this function  */
         // scrollJumpLengthRef.current += GetScrollDistanceForBPM(bpm)
-
         scrollJumpLengthRef.current += SCROLL_DISTANCE.Fastest; /* pixel distance */
       }
     }, SCROLL_SPEED);
 
     setAutoScrollInterval(interval);
+    setIsScrolling(true);
   };
 
   const resetAutoScroll = () => {
@@ -97,7 +95,7 @@ const AutoScroller = () => {
     }
 
     /* account for any unintended offset due to 0.5 pixel scroll speed */
-    const roundingBuffer = 2;
+    const roundingBuffer = 2.5;
 
     setIsScrollComplete(
       scrollPosition >= contentHeight - scrollViewHeight - roundingBuffer
