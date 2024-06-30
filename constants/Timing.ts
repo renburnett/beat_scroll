@@ -29,7 +29,7 @@ export const GetScrollDistanceForBPM = (bpm: number): number => {
   return SCROLL_DISTANCE.Slowest;
 }
 
-/* needs to be a constant for now, as it is a factor in determining how fast the `ScrollView` scrolls */
+/* TODO: needs to be a constant for now, as it is a factor in determining how fast the `ScrollView` scrolls */
 export const FONT_SIZE : number = 20;
 
 /* millisecond interval between each incremental scroll, _performance hits may occur at intervals lower than 16ms_ */
