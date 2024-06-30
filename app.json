@@ -2,6 +2,7 @@
   "expo": {
     "name": "Beat Scroll",
     "slug": "beat-scroll",
+    "description": "An app that auto scrolls lyrics",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -17,14 +18,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.ronbartlett.beatscroll"
+      "bundleIdentifier": "com.renburnett.beatscroll"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.ronbartlett.beatscroll"
+      "package": "com.renburnett.beatscroll"
     },
     "web": {
       "bundler": "metro",
