@@ -1,3 +1,4 @@
+// TODO: remove for production
 export const POKEMON_LOREM = `Ash, the aspiring Pokémon Trainer, and his loyal friend Brock embarked on a thrilling adventure.
 They encountered a mischievous Pikachu in the lush Viridian Forest, and after a playful encounter, Pikachu decided to join Ash on his journey.
 Along the way, they faced a fierce battle with a wild Charizard in the blazing fields of Mt.

@@ -10,6 +10,7 @@ export default function BeatIndex({ path }: { path: string }) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 4;
 
+  //TODO: remove for production
   const dummySongs: Song[] = [
     { bpm: 120, name: "DND Song", date: "2024-01-01", lyrics: DND_LOREM },
     { bpm: 100, name: "Normal Song", date: "2024-01-02", lyrics: NORMAL_LOREM },
@@ -27,10 +28,10 @@ export default function BeatIndex({ path }: { path: string }) {
       if (storedSongs) {
         setSongs(JSON.parse(storedSongs));
       } else {
+        //TODO: remove for production
         await AsyncStorage.setItem('@songs', JSON.stringify(dummySongs));
         setSongs(dummySongs);
       }
-      console.log('songs', songs.length);
     })();
   }, []);
 
