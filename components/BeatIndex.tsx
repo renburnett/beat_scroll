@@ -22,10 +22,12 @@ export default function BeatIndex({ path }: { path: string }) {
 
   useEffect(() => {
     (async () => {
-      await AsyncStorage.clear();
-
       const storedSongs = await AsyncStorage.getItem('@songs');
+
       if (storedSongs) {
+        //TODO: remove for production
+        await AsyncStorage.clear();
+
         setSongs(JSON.parse(storedSongs));
       } else {
         //TODO: remove for production

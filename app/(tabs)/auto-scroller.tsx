@@ -21,7 +21,7 @@ import { DND_LOREM } from "../../constants/DummyText";
 const AutoScroller = () => {
   const scrollViewRef = useRef<ScrollView>(null);
   const scrollJumpLengthRef = useRef<number>(SCROLL_DISTANCE.Medium);
-  const [autoScrollInterval, setAutoScrollInterval] = useState<NodeJS.Timer | null>(null);
+  const [autoScrollInterval, setAutoScrollInterval] = useState<NodeJS.Timeout | null>(null);
   const [bpm, setBpm] = useState<number>(DEFAULT_BPM);
 
   const [isScrolling, setIsScrolling] = useState<boolean>(false);
